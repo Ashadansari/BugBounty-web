@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BugHunter Hub - Professional Bug Bounty Blog</title>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        a {
+            text-decoration: none;
+            color: #2563eb;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Header */
+        header {
+            background-color: #1e293b;
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #22c55e;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 2rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #22c55e;
+            text-decoration: none;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            padding: 5rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            color: #22c55e;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            color: #e2e8f0;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #22c55e;
+            color: white;
+            padding: 0.9rem 1.8rem;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background-color: #16a34a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            text-decoration: none;
+        }
+        
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+        
+        .section-title {
+            font-size: 2.2rem;
+            margin-bottom: 2.5rem;
+            text-align: center;
+            color: #1e293b;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background-color: #22c55e;
+        }
+        
+        /* Featured Articles */
+        .articles {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+        
+        .article-card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+        }
+        
+        .article-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+        }
+        
+        .article-image {
+            height: 220px;
+            background-color: #f1f5f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        .article-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .article-card:hover .article-image img {
+            transform: scale(1.05);
+        }
+        
+        .article-content {
+            padding: 1.8rem;
+        }
+        
+        .article-content h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+            color: #0f172a;
+        }
+        
+        .article-meta {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 1rem;
+        }
+        
+        .article-meta span {
+            margin-right: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .tag {
+            display: inline-block;
+            background-color: #f1f5f9;
+            color: #475569;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-right: 0.6rem;
+            margin-bottom: 0.6rem;
+            transition: background-color 0.3s;
+        }
+        
+        .tag:hover {
+            background-color: #e2e8f0;
+        }
+        
+        /* Categories Section */
+        .categories {
+            margin-top: 5rem;
+        }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .category-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border-color: #22c55e;
+        }
+        
+        .category-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1rem;
+            background-color: #f1f5f9;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            color: #22c55e;
+        }
+        
+        .category-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+            color: #0f172a;
+        }
+        
+        .category-card p {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        
+        /* Newsletter */
+        .newsletter {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            padding: 5rem 2rem;
+            text-align: center;
+            margin-top: 5rem;
+            border-radius: 12px;
+        }
+        
+        .newsletter-content {
+            max-width: 650px;
+            margin: 0 auto;
+        }
+        
+        .newsletter h2 {
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+            color: #22c55e;
+        }
+        
+        .newsletter p {
+            margin-bottom: 2.5rem;
+            color: #e2e8f0;
+            font-size: 1.1rem;
+        }
+        
+        .form-group {
+            display: flex;
+            max-width: 550px;
+            margin: 0 auto;
+        }
+        
+        .form-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 4px 0 0 4px;
+            font-size: 1rem;
+            outline: none;
+        }
+        
+        .form-button {
+            background-color: #22c55e;
+            color: white;
+            border: none;
+            padding: 0 1.8rem;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .form-button:hover {
+            background-color: #16a34a;
+        }
+        
+        /* Latest Tools Section */
+        .tools {
+            margin-top: 5rem;
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .tool-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        
+        .tool-image {
+            height: 180px;
+            background-color: #f1f5f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .tool-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .tool-content {
+            padding: 1.5rem;
+        }
+        
+        .tool-content h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+            color: #0f172a;
+        }
+        
+        .tool-content p {
+            color: #64748b;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+        
+        .tool-links {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #0f172a;
+            color: #94a3b8;
+            padding: 4rem 2rem 2rem;
+            margin-top: 5rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+        }
+        
+        .footer-column h3 {
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background-color: #22c55e;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            color: #94a3b8;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: #22c55e;
+            text-decoration: none;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: #1e293b;
+            border-radius: 50%;
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        .social-link:hover {
+            background-color: #22c55e;
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 3rem;
+            margin-top: 3rem;
+            border-top: 1px solid #1e293b;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                margin-top: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .nav-links li {
+                margin: 0.5rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .form-group {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .form-input {
+                border-radius: 4px;
+                margin-bottom: 1rem;
+                width: 100%;
+            }
+            
+            .form-button {
+                border-radius: 4px;
+                padding: 0.8rem;
+                width: 100%;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <body>
+        <!-- Header -->
+        <header>
+            <nav class="navbar">
+                <div class="logo">BugHunter Hub</div>
+                <ul class="nav-links">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Articles</a></li>
+                    <li><a href="#">Programs</a></li>
+                    <li><a href="#">Tools</a></li>
+                </ul>
+            </nav>
+        </header>
+    
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Master the Art of Ethical Hacking</h1>
+                <p>Discover cutting-edge bug bounty techniques, security research insights, and professional penetration testing strategies.</p>
+                <a href="https://ashadansari.github.io/BugBounty_Blog/" class="btn">Explore Article</a>
+            </div>
+        </section>
+    
+        <!-- Featured Articles -->
+        <div class="container">
+            <h2 class="section-title">Latest Discoveries</h2>
+            <div class="articles">
+                <!-- Article 1 -->
+                <article class="article-card">
+                    <div class="article-image">
+                        <img src="https://via.placeholder.com/400x220" alt="XSS Vulnerability">
+                    </div>
+                    <div class="article-content">
+                        <div class="article-meta">
+                            <span>By John Doe</span>
+                            <span>May 15, 2023</span>
+                        </div>
+                        <h3>Advanced XSS Exploitation Techniques</h3>
+                        <p>Learn modern cross-site scripting attack vectors and defense mechanisms...</p>
+                        <div class="tags">
+                            <a href="#" class="tag">Web Security</a>
+                            <a href="#" class="tag">XSS</a>
+                        </div>
+                    </div>
+                </article>
+    
+                <!-- Article 2 -->
+                <article class="article-card">
+                    <div class="article-image">
+                        <img src="https://via.placeholder.com/400x220" alt="API Security">
+                    </div>
+                    <div class="article-content">
+                        <div class="article-meta">
+                            <span>By Jane Smith</span>
+                            <span>May 12, 2023</span>
+                        </div>
+                        <h3>API Security: Hidden Vulnerabilities</h3>
+                        <p>Uncover common misconfigurations in modern REST APIs...</p>
+                        <div class="tags">
+                            <a href="#" class="tag">API Security</a>
+                            <a href="#" class="tag">Pentesting</a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+    
+            <!-- Categories Section -->
+            <section class="categories">
+                <h2 class="section-title">Research Categories</h2>
+                <div class="category-grid">
+                    <div class="category-card">
+                        <div class="category-icon">🛡️</div>
+                        <h3>Web Security</h3>
+                        <p>Modern web application vulnerabilities and exploitation methods</p>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon">🔍</div>
+                        <h3>API Testing</h3>
+                        <p>REST and GraphQL API security assessment techniques</p>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon">📱</div>
+                        <h3>Mobile Security</h3>
+                        <p>iOS/Android app reverse engineering and testing</p>
+                    </div>
+                </div>
+            </section>
+    
+            <!-- Newsletter Section -->
+            <section class="newsletter">
+                <div class="newsletter-content">
+                    <h2>Join Our Security Circle</h2>
+                    <p>Get weekly updates on critical vulnerabilities, new tools, and exclusive bug bounty tips.</p>
+                    <form class="form-group">
+                        <input type="email" class="form-input" placeholder="Enter your email address">
+                        <button type="submit" class="form-button">Subscribe</button>
+                    </form>
+                </div>
+            </section>
+    
+            <!-- Tools Section -->
+            <section class="tools">
+                <h2 class="section-title">Essential Toolkit</h2>
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <div class="tool-image">
+                            <img src="https://via.placeholder.com/400x180" alt="Burp Suite">
+                        </div>
+                        <div class="tool-content">
+                            <h3>Burp Suite Pro Tips</h3>
+                            <p>Master advanced scanning techniques and extension development</p>
+                            <div class="tool-links">
+                                <a href="#">Download</a>
+                                <a href="#">Documentation</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-image">
+                            <img src="https://via.placeholder.com/400x180" alt="Nmap">
+                        </div>
+                        <div class="tool-content">
+                            <h3>Nmap Scripting Engine</h3>
+                            <p>Advanced network enumeration and vulnerability detection</p>
+                            <div class="tool-links">
+                                <a href="#">Download</a>
+                                <a href="#">Cheatsheet</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    
+        <!-- Footer -->
+        <footer>
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>About Us</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Our Mission</a></li>
+                        <li><a href="#">Research Team</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Categories</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Web Security</a></li>
+                        <li><a href="#">Network Pentesting</a></li>
+                        <li><a href="#">Mobile Hacking</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Legal</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Responsible Disclosure</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#" class="social-link">🐦</a>
+                        <a href="#" class="social-link">💼</a>
+                        <a href="#" class="social-link">📘</a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 BugHunter Hub. All rights reserved.</p>
+            </div>
+        </footer>
+    </body>
+    </html>
